@@ -52,7 +52,7 @@
                         class="block px-3 py-2 text-gray-900 hover:text-black transition duration-300 hover:bg-gray-50 rounded transform hover:translate-x-1">Portfolio</a>
                     <a href="{{ route('about') }}"
                         class="block px-3 py-2 text-gray-900 hover:text-black transition duration-300 hover:bg-gray-50 rounded transform hover:translate-x-1">About</a>
-                    <a href="route('contact')"
+                    <a href="{{ route('contact') }}"
                         class="block px-3 py-2 text-gray-900 hover:text-black transition duration-300 hover:bg-gray-50 rounded transform hover:translate-x-1">Contact</a>
                     <a href="https://instagram.com/jes_production" target="_blank"
                         class="md:block px-3 py-2 font-extralight text-gray-500 hover:text-black transition duration-300 flex items-center gap-2 hover:bg-gray-50 rounded transform hover:translate-x-1">
