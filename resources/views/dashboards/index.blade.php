@@ -86,7 +86,7 @@
         @else
             @foreach ($photos as $photo)
                 <div class="col-span-1 relative group">
-                    <img src="{{ asset('storage/' . $photo->image) }}" alt="{{ $photo->title }}"
+                    <img src="{{ asset('storage/app/public/' . $photo->image) }}" alt="{{ $photo->title }}"
                         class="w-full object-contain transition duration-300 group-hover:opacity-75">
 
                     <!-- Overlay dengan tombol -->

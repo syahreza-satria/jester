@@ -9,9 +9,9 @@
         @else
             @foreach ($photos as $photo)
                 <div class="col-span-1 p-1 md:p-2 lg:p-4">
-                    <a href="{{ asset('storage/' . $photo->image) }}" class="glightbox" data-gallery="gallery1"
+                    <a href="{{ asset('storage/app/public/' . $photo->image) }}" class="glightbox" data-gallery="gallery1"
                         data-title="{{ $photo->title }}" data-description="{{ $photo->description }}">
-                        <img src="{{ asset('storage/' . $photo->image) }}" alt="{{ $photo->title }}"
+                        <img src="{{ asset('storage/app/public/' . $photo->image) }}" alt="{{ $photo->title }}"
                             class="w-full object-contain max-h-80">
                     </a>
                 </div>
