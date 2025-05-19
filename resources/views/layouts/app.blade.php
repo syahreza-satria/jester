@@ -6,26 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Jester</title>
-    @vite('resources/css/app.css', 'resources/js/app.js')
+    @vite('resources/css/app.css')
     <link rel="stylesheet" href="{{ asset('vendor/glightbox/css/glightbox.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
 </head>
 
-<body class="bg-white min-h-screen">
+<body class="min-h-screen bg-white">
     <nav class="bg-gray-50">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-0">
-            <div class="flex justify-between items-center py-4">
-                <a href="#" class="font-bold text-xl">Jester Production</a>
+        <div class="max-w-5xl px-4 mx-auto sm:px-6 lg:px-0">
+            <div class="flex items-center justify-between py-4">
+                <a href="#" class="text-xl font-bold">Jester Production</a>
 
-                <div class="hidden md:flex gap-6 items-center uppercase text-sm">
+                <div class="items-center hidden gap-6 text-sm uppercase md:flex">
                     <a href="{{ route('index') }}"
-                        class="text-gray-900 hover:text-black transition duration-300 hover:scale-105">Portfolio</a>
+                        class="text-gray-900 transition duration-300 hover:text-black hover:scale-105">Portfolio</a>
                     <a href="{{ route('about') }}"
-                        class="text-gray-900 hover:text-black transition duration-300 hover:scale-105">About</a>
+                        class="text-gray-900 transition duration-300 hover:text-black hover:scale-105">About</a>
                     <a href="{{ route('contact') }}"
-                        class="text-gray-900 hover:text-black transition duration-300 hover:scale-105">Contact</a>
+                        class="text-gray-900 transition duration-300 hover:text-black hover:scale-105">Contact</a>
                     <a href="https://instagram.com/jes_production" target="_blank"
-                        class="font-extralight text-gray-500 hover:text-black transition duration-300 hover:scale-110">
+                        class="text-gray-500 transition duration-300 font-extralight hover:text-black hover:scale-110">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
                             class="bi bi-instagram" viewBox="0 0 16 16">
                             <path
@@ -36,9 +36,9 @@
 
                 <div class="md:hidden">
                     <button type="button"
-                        class="text-gray-900 hover:text-black focus:outline-none transition-transform duration-300 active:scale-95"
+                        class="text-gray-900 transition-transform duration-300 hover:text-black focus:outline-none active:scale-95"
                         id="mobile-menu-button">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="menu-icon">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="menu-icon">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
@@ -46,16 +46,16 @@
                 </div>
             </div>
 
-            <div class="md:hidden max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="mobile-menu">
-                <div class="flex flex-col gap-4 uppercase text-sm pb-4">
+            <div class="overflow-hidden transition-all duration-500 ease-in-out md:hidden max-h-0" id="mobile-menu">
+                <div class="flex flex-col gap-4 pb-4 text-sm uppercase">
                     <a href="{{ route('index') }}"
-                        class="block px-3 py-2 text-gray-900 hover:text-black transition duration-300 hover:bg-gray-50 rounded transform hover:translate-x-1">Portfolio</a>
+                        class="block px-3 py-2 text-gray-900 transition duration-300 transform rounded hover:text-black hover:bg-gray-50 hover:translate-x-1">Portfolio</a>
                     <a href="{{ route('about') }}"
-                        class="block px-3 py-2 text-gray-900 hover:text-black transition duration-300 hover:bg-gray-50 rounded transform hover:translate-x-1">About</a>
+                        class="block px-3 py-2 text-gray-900 transition duration-300 transform rounded hover:text-black hover:bg-gray-50 hover:translate-x-1">About</a>
                     <a href="{{ route('contact') }}"
-                        class="block px-3 py-2 text-gray-900 hover:text-black transition duration-300 hover:bg-gray-50 rounded transform hover:translate-x-1">Contact</a>
+                        class="block px-3 py-2 text-gray-900 transition duration-300 transform rounded hover:text-black hover:bg-gray-50 hover:translate-x-1">Contact</a>
                     <a href="https://instagram.com/jes_production" target="_blank"
-                        class="md:block px-3 py-2 font-extralight text-gray-500 hover:text-black transition duration-300 flex items-center gap-2 hover:bg-gray-50 rounded transform hover:translate-x-1">
+                        class="flex items-center gap-2 px-3 py-2 text-gray-500 transition duration-300 transform rounded md:block font-extralight hover:text-black hover:bg-gray-50 hover:translate-x-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
                             class="bi bi-instagram" viewBox="0 0 16 16">
                             <path
@@ -72,8 +72,8 @@
         @yield('content')
     </div>
 
-    <footer class="text-center py-6">
-        <p class="text-xs md:text-sm text-gray-500 font-extralight">Made by Syahreza Satria Alfath © Jester Production
+    <footer class="py-6 text-center">
+        <p class="text-xs text-gray-500 md:text-sm font-extralight">Made by Syahreza Satria Alfath © Jester Production
             2025
         </p>
     </footer>

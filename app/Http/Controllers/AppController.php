@@ -9,7 +9,7 @@ class AppController extends Controller
 {
     public function index()
     {
-        $photos = Photo::latest()->take(6)->get();
+        $photos = Photo::latest()->get();
         return view('index', compact('photos'));
     }
 

@@ -11,7 +11,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $photos = Photo::all();
+        $photos = Photo::latest()->get();
         return view('dashboards.index', compact('photos'));
     }
 
@@ -20,7 +20,7 @@ class DashboardController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
         if ($request->hasFile('image')) {
@@ -40,7 +40,7 @@ class DashboardController extends Controller
         return response()->json([
             'id' => $photo->id,
             'title' => $photo->title,
-            'image_url' => asset('storage/' . $photo->image),
+            'image_url' => asset('storage/app/public/' . $photo->image),
         ]);
     }
 
@@ -49,7 +49,7 @@ class DashboardController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
         if ($request->hasFile('image')) {
