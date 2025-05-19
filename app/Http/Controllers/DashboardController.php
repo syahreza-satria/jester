@@ -53,15 +53,10 @@ class DashboardController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            // Hapus file lama (pastikan path relatif)
-            if ($photo->image) {
-                $oldImage = str_replace('storage/app/public/', '', $photo->image);
-                Storage::disk('public')->delete($oldImage);
-            }
+            Storage::disk('public')->delete($photo->image);
 
-            // Simpan file baru
             $imagePath = $request->file('image')->store('photos', 'public');
-            $validated['image'] = 'storage/app/public/' . $imagePath; // Tambahkan 'storage/' untuk akses web
+            $validated['image'] = $imagePath;
         }
 
         $photo->update($validated);

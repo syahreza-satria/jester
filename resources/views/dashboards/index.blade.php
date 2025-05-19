@@ -55,6 +55,7 @@
 
     @endif
 
+
     <div
         class="flex items-center justify-between px-4 py-3 mx-auto mb-8 rounded-lg shadow-md sm:px-6 lg:px-8 bg-gray-50 max-w-7xl">
         <h1 class="text-lg font-bold text-gray-800 sm:text-xl">Semua Gambar</h1>
@@ -72,12 +73,13 @@
     </div>
 
     {{-- Modal --}}
-    <div class="fixed inset-0 z-50 hidden bg-gray-900 bg-opacity-50" id="add-modal">
+    <div class="fixed inset-0 z-50 hidden bg-gray-900 bg-opacity-50" id="modal">
         <div class="flex items-center justify-center min-h-screen">
             <div class="w-11/12 p-6 bg-white rounded-lg shadow-lg md:w-1/2 lg:w-1/3">
                 <h2 class="mb-4 text-xl font-bold">Tambah Gambar</h2>
 
-                @if ($errors->any() && !request()->has('edit_mode'))
+                <!-- Tampilkan error validasi global -->
+                @if ($errors->any())
                     <div class="p-4 mb-4 text-red-700 bg-red-100 border border-red-300 rounded-lg">
                         <ul class="pl-5 list-disc">
                             @foreach ($errors->all() as $error)
@@ -121,8 +123,7 @@
                     </div>
 
                     <div class="flex justify-end gap-2 text-sm">
-                        <button type="button" id="close-add-modal"
-                            class="px-4 py-2 mt-4 text-rose-500">Batalkan</button>
+                        <button type="button" id="close-modal" class="px-4 py-2 mt-4 text-rose-500">Batalkan</button>
                         <button type="submit"
                             class="px-4 py-2 mt-4 rounded-full bg-sky-100 text-sky-500">Tambah</button>
                     </div>
@@ -140,7 +141,7 @@
         @else
             @foreach ($photos as $photo)
                 <div class="relative col-span-1 group">
-                    <img src="{{ asset('storage/app/public/' . $photo->image) }}" alt="{{ $photo->title }}"
+                    <img src="{{ asset('storage/' . $photo->image) }}" alt="{{ $photo->title }}"
                         class="object-contain w-full transition duration-300 group-hover:opacity-75">
 
                     <!-- Overlay dengan tombol -->
@@ -174,77 +175,56 @@
                     </div>
                 </div>
 
-                {{-- Modal Edit Button --}}
-                <div id="editModal-{{ $photo->id }}" class="fixed inset-0 z-50 hidden bg-gray-900 bg-opacity-50">
-                    <div class="flex items-center justify-center min-h-screen">
-                        <div class="w-11/12 p-6 bg-white rounded-lg shadow-lg md:w-1/2 lg:w-1/3">
-                            <h2 class="mb-4 text-xl font-bold">Edit Gambar</h2>
+                <!-- Modal Edit -->
+                <div id="editModal-{{ $photo->id }}" class="fixed inset-0 z-50 hidden overflow-y-auto">
+                    <div
+                        class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                        <!-- Background overlay -->
+                        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                        </div>
 
-                            @if ($errors->any() && request('photo_id') == $photo->id)
-                                <div class="p-4 mb-4 text-red-700 bg-red-100 border border-red-300 rounded-lg">
-                                    <ul class="pl-5 list-disc">
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-
-                            <form id="editForm-{{ $photo->id }}"
-                                action="{{ route('dashboard.update', $photo->id) }}" method="POST"
-                                enctype="multipart/form-data">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="edit_mode" value="1">
-                                <input type="hidden" name="photo_id" value="{{ $photo->id }}">
-
-                                <div class="mb-4 text-gray-500">
-                                    <label for="title-{{ $photo->id }}"
-                                        class="block mb-1 text-sm font-medium">Title</label>
-                                    <input type="text" name="title" id="title-{{ $photo->id }}"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg @error('title', $photo->id) border-red-500 @enderror"
-                                        value="{{ old('title', $photo->title) }}" required>
-                                    @error('title', $photo->id)
-                                        <span class="mt-1 text-sm text-red-600">{{ $message }}</span>
-                                    @enderror
-                                </div>
-
-                                <div class="mb-4 text-gray-500">
-                                    <label for="description-{{ $photo->id }}"
-                                        class="block mb-1 text-sm font-medium">Deskripsi</label>
-                                    <textarea name="description" id="description-{{ $photo->id }}"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg @error('description', $photo->id) border-red-500 @enderror"
-                                        rows="3">{{ old('description', $photo->description) }}</textarea>
-                                    @error('description', $photo->id)
-                                        <span class="mt-1 text-sm text-red-600">{{ $message }}</span>
-                                    @enderror
-                                </div>
-
-                                <div class="mb-4 text-gray-500">
-                                    <label for="image-{{ $photo->id }}"
-                                        class="block mb-1 text-sm font-medium">Gambar (Maks. 5MB)</label>
-                                    <input type="file" name="image" id="image-{{ $photo->id }}"
-                                        class="w-full file:font-medium file:bg-sky-100 file:text-sky-500 hover:cursor-pointer file:border-0 file:rounded-full file:py-2 file:px-4 file:mr-2 file:text-sm @error('image', $photo->id) border-red-500 @enderror">
-                                    @error('image', $photo->id)
-                                        <span class="mt-1 text-sm text-red-600">{{ $message }}</span>
-                                    @enderror
-                                    <p class="mt-1 text-xs text-gray-400">Format: JPEG, PNG, JPG | Maksimal 5MB</p>
-                                    @if ($photo->image)
-                                        <div class="mt-2">
-                                            <img src="{{ asset('storage/' . $photo->image) }}" alt="Current image"
-                                                class="object-cover w-20 h-20">
-                                            <p class="text-xs text-gray-500">Current image</p>
-                                        </div>
-                                    @endif
-                                </div>
-
-                                <div class="flex justify-end gap-2 text-sm">
-                                    <button type="button" onclick="closeEditModal('{{ $photo->id }}')"
-                                        class="px-4 py-2 mt-4 text-rose-500">Batalkan</button>
-                                    <button type="button" onclick="submitEditForm('{{ $photo->id }}')"
-                                        class="px-4 py-2 mt-4 rounded-full bg-sky-100 text-sky-500">Simpan</button>
-                                </div>
-                            </form>
+                        <!-- Modal content -->
+                        <div
+                            class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                            <div class="px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4">
+                                <h3 class="mb-2 text-lg font-medium leading-6 text-gray-900">Edit Photo</h3>
+                                <form id="editForm-{{ $photo->id }}"
+                                    action="{{ route('dashboard.update', $photo->id) }}" method="POST"
+                                    enctype="multipart/form-data">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="mb-4">
+                                        <label for="title-{{ $photo->id }}"
+                                            class="block mb-1 text-sm font-medium text-gray-500">Title</label>
+                                        <input type="text" name="title" id="title-{{ $photo->id }}"
+                                            value="{{ $photo->title }}"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="description-{{ $photo->id }}"
+                                            class="block mb-1 text-sm font-medium text-gray-500">Description</label>
+                                        <textarea type="text" name="description" id="title-{{ $photo->id }}"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg" rows="3">{{ old('description', $photo->description) }}</textarea>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="image-{{ $photo->id }}"
+                                            class="block mb-2 text-sm font-medium text-gray-500">Image</label>
+                                        <input type="file" name="image" id="image-{{ $photo->id }}"
+                                            class="w-full file:font-medium file:bg-sky-100 file:text-sky-500 hover:cursor-pointer file:border-0 file:rounded-full file:py-2 file:px-4 file:mr-2 file:text-sm">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse">
+                                <button type="button" onclick="submitEditForm('{{ $photo->id }}')"
+                                    class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                    Save Changes
+                                </button>
+                                <button type="button" onclick="closeEditModal('{{ $photo->id }}')"
+                                    class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                    Cancel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -255,62 +235,79 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const addPhotoButton = document.getElementById('add-photo');
-            const modal = document.getElementById('modal');
-            const closeModalButton = document.getElementById('close-modal');
+            const addPhotoModal = document.getElementById('modal');
+            const closeAddModalButton = document.getElementById('close-modal');
 
-            addPhotoButton.addEventListener('click', function() {
-                modal.classList.remove('hidden');
-            });
+            // Buka modal tambah foto
+            if (addPhotoButton && addPhotoModal) {
+                addPhotoButton.addEventListener('click', function() {
+                    addPhotoModal.classList.remove('hidden');
+                    document.body.classList.add('overflow-hidden');
+                });
+            }
 
-            closeModalButton.addEventListener('click', function() {
-                modal.classList.add('hidden');
-            });
+            // Tutup modal tambah foto
+            if (closeAddModalButton && addPhotoModal) {
+                closeAddModalButton.addEventListener('click', function() {
+                    addPhotoModal.classList.add('hidden');
+                    document.body.classList.remove('overflow-hidden');
+                });
+            }
 
-            // Close modal when clicking outside of it
+            // Tutup modal saat klik di luar area modal
             window.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    modal.classList.add('hidden');
+                // Modal tambah foto
+                if (addPhotoModal && event.target === addPhotoModal) {
+                    addPhotoModal.classList.add('hidden');
+                    document.body.classList.remove('overflow-hidden');
                 }
+
+                // Modal edit foto
+                const editModals = document.querySelectorAll('[id^="editModal-"]');
+                editModals.forEach(modal => {
+                    if (event.target === modal) {
+                        const photoId = modal.id.split('-')[1];
+                        closeEditModal(photoId);
+                    }
+                });
             });
+
+            // Auto show modal jika ada error validasi dari server
+            @if ($errors->any())
+                if (addPhotoModal) {
+                    addPhotoModal.classList.remove('hidden');
+                    document.body.classList.add('overflow-hidden');
+                }
+            @endif
         });
 
+        // Fungsi global untuk buka modal edit
         function openEditModal(photoId) {
-            document.getElementById(`editModal-${photoId}`).classList.remove('hidden');
-            document.body.classList.add('overflow-hidden');
+            const modal = document.getElementById(`editModal-${photoId}`);
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            }
         }
 
-        // Fungsi untuk menutup modal
+        // Fungsi global untuk tutup modal edit
         function closeEditModal(photoId) {
-            document.getElementById(`editModal-${photoId}`).classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
+            const modal = document.getElementById(`editModal-${photoId}`);
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
         }
 
-        // Fungsi untuk submit form
+        // Fungsi global untuk submit form edit
         function submitEditForm(photoId) {
-            document.getElementById(`editForm-${photoId}`).submit();
+            const form = document.getElementById(`editForm-${photoId}`);
+            if (form) {
+                form.submit();
+            }
         }
-
-        // Tutup modal ketika klik di luar area modal
-        window.onclick = function(event) {
-            const modals = document.querySelectorAll('[id^="editModal-"]');
-            modals.forEach(modal => {
-                if (event.target === modal) {
-                    const photoId = modal.id.split('-')[1];
-                    closeEditModal(photoId);
-                }
-            });
-        }
-
-        // Auto-show modal jika ada error
-        @if ($errors->any())
-            document.getElementById('modal').classList.remove('hidden');
-        @endif
-
-        // Close modal handler
-        document.getElementById('close-modal').addEventListener('click', function() {
-            document.getElementById('modal').classList.add('hidden');
-        });
     </script>
+
 </body>
 
 </html>
